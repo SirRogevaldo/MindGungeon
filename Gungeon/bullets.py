@@ -3,13 +3,19 @@ import pygame
 
 class Bullet:
     def __init__(self, color, x, y, width, height, speed, targetx,targety):
-        super().__init__(color, x, y, width, height, speed)
+        self.rect = pygame.Rect(x,y,width,height)
+        self.color = color
+        self.speed = speed
         angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
         print('Angle in degrees:', int(angle*180/math.pi))
         self.dx = math.cos(angle)*speed
         self.dy = math.sin(angle)*speed
         self.x = x
         self.y = y
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, self.color, self.rect)
+        
     #Override
     def move(self):
         #self.x and self.y are floats (decimals) so I get more accuracy
