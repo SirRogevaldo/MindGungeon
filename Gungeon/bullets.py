@@ -7,7 +7,7 @@ class Bullet:
         self.color = color
         self.speed = speed
         angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
-        print('Angle in degrees:', int(angle*180/math.pi))
+        #print('Angle in degrees:', int(angle*180/math.pi))
         self.dx = math.cos(angle)*speed
         self.dy = math.sin(angle)*speed
         self.x = x

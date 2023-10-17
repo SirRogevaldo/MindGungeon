@@ -17,6 +17,7 @@ inHandler = InputHandler()
 
 bullets = []
 
+pygame.mouse.set_visible(False)
 
 #Player Initialization
 player = Gunman(WIDTH/2, HEIGHT/2)
@@ -31,7 +32,7 @@ while True:
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
             #print(x,y)
-            b = Bullet("grey", player.x, player.y, 20,20, 20, x,y)
+            b = Bullet("orange", player.x, player.y, 20,20, 10, x,y)
             bullets.append(b)
             #ef __init__(self, color, x, y, width, height, speed, targetx,targety):
     
@@ -46,12 +47,19 @@ while True:
             bullets_on_screen.append(b)
     
     bullets = bullets_on_screen
-    print(len(bullets))
+    #print(len(bullets))
 
     display.fill((12, 24, 36))
-    pygame.draw.rect(display, "brown", (WIDTH/10, HEIGHT/10, WIDTH*4/5, HEIGHT*4/5))  
+    pygame.draw.rect(display, (60,60,60), (WIDTH/10, HEIGHT/10, WIDTH*4/5, HEIGHT*4/5))  
     for b in bullets:
         b.draw(display)
+
+    # Mouse
+    x,y = pygame.mouse.get_pos()
+    pygame.draw.circle(display, (255,0,0), (x, y), 15)
+    pygame.draw.circle(display, (0,0,0), (x, y), 10)
+    pygame.draw.circle(display, (255,0,0), (x, y), 5)
+
     player.draw(display)
 
     #update

@@ -7,7 +7,7 @@ class Gunman(Actor):
         self.x = int(x)
         self.y = int(y)
         self.rect = pygame.Rect(self.x, self.y, 32, 32)
-        self.color = (250, 120, 60)
+        self.color = (92, 64, 51)
         self.velX = 0
         self.velY = 0
         self.left_pressed = False
