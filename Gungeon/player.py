@@ -14,10 +14,7 @@ class Gunman(Actor):
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
-        self.speed = 2
-    
-    def draw(self, win):
-        pygame.draw.rect(win, self.color, self.rect)
+        self.speed = 4
     
     def update(self):
         self.velX = 0
@@ -34,8 +31,14 @@ class Gunman(Actor):
         self.x += self.velX
         self.y += self.velY
 
-        self.rect = pygame.Rect(int(self.x), int(self.y), 32, 32)
+        #self.rect = pygame.Rect(int(self.x), int(self.y), 32, 60)
     # getters and setters
+
+    def getX(self):
+        return self.x
+    
+    def getY(self):
+        return self.y
 
     def get_left_pressed(self):
         return self.left_pressed
