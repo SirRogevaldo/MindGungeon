@@ -21,12 +21,17 @@ class Right(Command):
     def pressed(self,value,actor: Actor):
         actor.set_right_pressed(value)
 
+class Mouse_move(Command):
+    def move(self, value, actor: Actor):
+        actor.set_mouse_pos(value)
+
 class InputHandler:
     command = {
         pygame.K_w: Up(),
         pygame.K_s: Down(),
         pygame.K_a: Left(),
-        pygame.K_d: Right()
+        pygame.K_d: Right(),
+        pygame.MOUSEMOTION: Mouse_move()
     }
 
     def handleInput(self,keys, actor: Actor):
@@ -35,3 +40,6 @@ class InputHandler:
 
         for key in wasd:
             self.command[key].pressed(keys[key],actor)
+    
+    def handleMouse(self, mouse, actor: Actor):
+        self.command[pygame.MOUSEMOTION].move(mouse,actor)

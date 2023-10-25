@@ -1,5 +1,9 @@
 import pygame
+from FSM import FSM
 from actor import Actor
+from playerSprite import GunnerSprite
+import math
+
 
 #Gunman Class
 class Gunman(Actor):
@@ -14,7 +18,13 @@ class Gunman(Actor):
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
+        self.mouse_pos = (0,0)
+
         self.speed = 4
+
+        # Player sprite
+        self.player_sprite = GunnerSprite()
+        #self.player_fsm = FSM() invinc frames
     
     def update(self):
         self.velX = 0
@@ -31,7 +41,15 @@ class Gunman(Actor):
         self.x += self.velX
         self.y += self.velY
 
-        #self.rect = pygame.Rect(int(self.x), int(self.y), 32, 60)
+        angle = math.atan2(self.x-self.mouse_pos[0], self.y-self.mouse_pos[1])
+
+        walk = (self.left_pressed or self.right_pressed or self.up_pressed or self.down_pressed)
+
+        self.player_sprite.update(angle,walk)
+    
+    def draw(self, display):
+        self.player_sprite.draw(display,self.x, self.y)
+
     # getters and setters
 
     def getX(self):
@@ -63,4 +81,10 @@ class Gunman(Actor):
     
     def set_down_pressed(self, pressed):
         self.down_pressed = pressed
+    
+    def get_mouse_pos(self):
+        return self.mouse_pos
+
+    def set_mouse_pos(self, pos):
+        self.mouse_pos = pos
     
