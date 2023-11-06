@@ -61,17 +61,15 @@ while True:
     #update
     player.update()
 
+    
     for wall in walls:
         if wall.collides(player.rect):
 
-            if player.velX < 0:
-                player.set_rect_left(wall.getHitBox().right)
-            if player.velX > 0:
-                player.set_rect_right(wall.getHitBox().left)
-            if player.velY < 0:
-                player.set_rect_top(wall.getHitBox().bottom)
-            if player.velY > 0:
-                player.set_rect_bottom(wall.getHitBox().top)
+            if player.velX != 0: # player left
+                player.setX(player.last_x)
+            if player.velY != 0: # player up
+                player.setY(player.last_y)
+                       
 
     # Draw
     display.fill((12, 24, 36))

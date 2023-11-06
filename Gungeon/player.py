@@ -9,6 +9,8 @@ import math
 class Gunman(Actor):
     def __init__(self, x, y):
         self.rect = pygame.Rect(int(x), int(y), 48, 70)
+        self.last_x = int(x)
+        self.last_y = int(y)
         self.color = (92, 64, 51)
         self.velX = 0
         self.velY = 0
@@ -23,23 +25,21 @@ class Gunman(Actor):
         # Player sprite
         self.player_sprite = GunnerSprite()
         #self.player_fsm = FSM() invinc frames
+
+    def move(self, dx, dy):
+        
+        # Move each axis separately. Note that this checks for collisions both times.
+        if dx != 0:
+            self.last_x = self.rect.x
+            # Move the rect
+            self.rect.x += dx * self.speed
+        if dy != 0:
+            self.last_y = self.rect.y
+            # Move the rect
+            self.rect.y += dy * self.speed
+
     
     def update(self):
-        self.velX = 0
-        self.velY = 0
-        if self.left_pressed and not self.right_pressed:
-            self.velX = -self.speed
-        if self.right_pressed and not self.left_pressed:
-            self.velX = self.speed
-        if self.up_pressed and not self.down_pressed:
-            self.velY = -self.speed
-        if self.down_pressed and not self.up_pressed:
-            self.velY = self.speed
-        
-        self.rect.x += self.velX
-        self.rect.y += self.velY
-
-
         angle = math.atan2(self.rect.x-self.mouse_pos[0], self.rect.y-self.mouse_pos[1])
 
         walk = (self.left_pressed or self.right_pressed or self.up_pressed or self.down_pressed)
