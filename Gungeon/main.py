@@ -7,6 +7,7 @@ from bullet import Bullet
 from all_bullets import All_Bullets
 from player import Gunman
 from commands import InputHandler
+from map_load import map_load, Tile
 
 #Constants
 WIDTH, HEIGHT = 1920, 1020
@@ -31,6 +32,8 @@ player = Gunman(WIDTH/2, HEIGHT/2)
 cooldown = 500
 now = 0
 
+tiles,walls = map_load()
+
 #Main Loop
 while True:
 
@@ -47,7 +50,7 @@ while True:
             if last - now >= cooldown:
                 # shoot
                 now = pygame.time.get_ticks()
-                b = Bullet("orange", player.x+30, player.y+10, 20,20, 10, x,y)
+                b = Bullet("orange", player.getX()+30, player.getY()+10, 20,20, 10, x,y)
                 bullets.add(b)
     
     inHandler.handleInput(pygame.key.get_pressed(), player)
@@ -55,9 +58,26 @@ while True:
     # Move Bullets    
     bullets.move(WIDTH, HEIGHT)
 
+    #update
+    player.update()
+
+    for wall in walls:
+        if wall.collides(player.rect):
+
+            if player.velX < 0:
+                player.set_rect_left(wall.getHitBox().right)
+            if player.velX > 0:
+                player.set_rect_right(wall.getHitBox().left)
+            if player.velY < 0:
+                player.set_rect_top(wall.getHitBox().bottom)
+            if player.velY > 0:
+                player.set_rect_bottom(wall.getHitBox().top)
+
     # Draw
     display.fill((12, 24, 36))
-    pygame.draw.rect(display, (60,60,60), (WIDTH/10, HEIGHT/10, WIDTH*4/5, HEIGHT*4/5))  
+    #pygame.draw.rect(display, (60,60,60), (WIDTH/10, HEIGHT/10, WIDTH*4/5, HEIGHT*4/5))
+    for tile in tiles:
+        display.blit(tile.image, (tile.x, tile.y))
 
     # Draw Bullets
     bullets.draw(display)
@@ -68,8 +88,6 @@ while True:
     pygame.draw.circle(display, (0,0,0), (x, y), 10)
     pygame.draw.circle(display, (255,0,0), (x, y), 5)
 
-    #update
-    player.update()
     player.draw(display)
     pygame.display.flip()
 

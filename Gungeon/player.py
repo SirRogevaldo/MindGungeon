@@ -8,9 +8,7 @@ import math
 #Gunman Class
 class Gunman(Actor):
     def __init__(self, x, y):
-        self.x = int(x)
-        self.y = int(y)
-        self.rect = pygame.Rect(self.x, self.y, 32, 32)
+        self.rect = pygame.Rect(int(x), int(y), 48, 70)
         self.color = (92, 64, 51)
         self.velX = 0
         self.velY = 0
@@ -38,25 +36,28 @@ class Gunman(Actor):
         if self.down_pressed and not self.up_pressed:
             self.velY = self.speed
         
-        self.x += self.velX
-        self.y += self.velY
+        self.rect.x += self.velX
+        self.rect.y += self.velY
 
-        angle = math.atan2(self.x-self.mouse_pos[0], self.y-self.mouse_pos[1])
+
+        angle = math.atan2(self.rect.x-self.mouse_pos[0], self.rect.y-self.mouse_pos[1])
 
         walk = (self.left_pressed or self.right_pressed or self.up_pressed or self.down_pressed)
 
         self.player_sprite.update(angle,walk)
     
     def draw(self, display):
-        self.player_sprite.draw(display,self.x, self.y)
+        self.player_sprite.draw(display,self.rect.x, self.rect.y)
 
     # getters and setters
-
     def getX(self):
-        return self.x
+        return self.rect.x
     
     def getY(self):
-        return self.y
+        return self.rect.y
+    
+    def get_rect(self):
+        return self.rect
 
     def get_left_pressed(self):
         return self.left_pressed
@@ -69,6 +70,27 @@ class Gunman(Actor):
 
     def get_down_pressed(self):
         return self.down_pressed
+
+    def setX(self, x):
+        self.rect.x = x
+    
+    def setY(self, y):
+        self.rect.y = y
+    
+    def set_rect(self, rect):
+        self.rect = rect
+    
+    def set_rect_left(self, left):
+        self.rect.left = left
+    
+    def set_rect_right(self, right):
+        self.rect.right = right
+    
+    def set_rect_top(self, top):
+        self.rect.top = top
+    
+    def set_rect_bottom(self, bottom):
+        self.rect.bottom = bottom
 
     def set_left_pressed(self, pressed):
         self.left_pressed = pressed

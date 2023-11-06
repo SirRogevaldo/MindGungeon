@@ -55,7 +55,7 @@ class GunnerSprite(pygame.sprite.Sprite):
 
     def update(self,angle,walk):
 
-        if walk:
+        if not walk:
             self.updateType("IDLE")
         elif angle < -2.7 or angle > 2.7:
             self.updateType("DOWN")
@@ -76,7 +76,7 @@ class GunnerSprite(pygame.sprite.Sprite):
             self.frame = 0
 
     def draw(self, display, x, y):
-        display.blit(self.currentAnimation[self.frame], (x, y))
+        display.blit(self.currentAnimation[self.frame%self.getCurrentLength()], (x, y))
 
     def getCurrentAnimation(self):
         return self.currentAnimation
