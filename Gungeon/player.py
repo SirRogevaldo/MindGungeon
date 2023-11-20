@@ -2,24 +2,25 @@ import pygame
 from FSM import FSM
 from actor import Actor
 from playerSprite import GunnerSprite
+from subject import Subject
 import math
 
 
 #Gunman Class
-class Gunman(Actor):
+class Gunman(Actor,Subject):
     def __init__(self, x, y):
-        self.rect = pygame.Rect(int(x), int(y), 48, 70)
+        Subject.__init__(self)
+
+        self.register("hit", self.got_shot)
+
+        self.rect = pygame.Rect(int(x), int(y), 50, 70)
         self.last_x = int(x)
         self.last_y = int(y)
-        self.color = (92, 64, 51)
         self.velX = 0
         self.velY = 0
-        self.left_pressed = False
-        self.right_pressed = False
-        self.up_pressed = False
-        self.down_pressed = False
-        self.mouse_pos = (0,0)
+        self.color = (92, 64, 51)
 
+        self.health = 6
         self.speed = 4
 
         # Player sprite
@@ -27,24 +28,39 @@ class Gunman(Actor):
         #self.player_fsm = FSM() invinc frames
 
     def move(self, dx, dy):
-        
+
+        self.velX = 0
+        self.velY = 0
+
         # Move each axis separately. Note that this checks for collisions both times.
         if dx != 0:
             self.last_x = self.rect.x
+            self.velX = dx
             # Move the rect
             self.rect.x += dx * self.speed
-        if dy != 0:
+        elif dy != 0:
             self.last_y = self.rect.y
+            self.velY = dy
             # Move the rect
             self.rect.y += dy * self.speed
 
-    
     def update(self):
-        angle = math.atan2(self.rect.x-self.mouse_pos[0], self.rect.y-self.mouse_pos[1])
 
-        walk = (self.left_pressed or self.right_pressed or self.up_pressed or self.down_pressed)
+        xx,yy = pygame.mouse.get_pos()
+
+        angle = math.atan2(self.rect.x - xx, self.rect.y - yy)
+
+        walk = (self.velX != 0 or self.velY != 0)
 
         self.player_sprite.update(angle,walk)
+    
+    def got_shot(self, entity):
+        print("Oof")
+        self.health -= entity.get_damage()
+        if self.health <= 0:
+            print("You died")
+            pygame.quit()
+        
     
     def draw(self, display):
         self.player_sprite.draw(display,self.rect.x, self.rect.y)
@@ -58,23 +74,25 @@ class Gunman(Actor):
     
     def get_rect(self):
         return self.rect
+    
+    def getVelX(self):
+        return self.velX
+    
+    def getVelY(self):
+        return self.velY
 
-    def get_left_pressed(self):
-        return self.left_pressed
-
-    def get_right_pressed(self):
-        return self.right_pressed
-
-    def get_up_pressed(self):
-        return self.up_pressed
-
-    def get_down_pressed(self):
-        return self.down_pressed
+    #-------------------
 
     def setX(self, x):
         self.rect.x = x
     
     def setY(self, y):
+        self.rect.y = y
+
+    def setVelX(self, x):
+        self.rect.x = x
+    
+    def setVelY(self, y):
         self.rect.y = y
     
     def set_rect(self, rect):
@@ -91,22 +109,5 @@ class Gunman(Actor):
     
     def set_rect_bottom(self, bottom):
         self.rect.bottom = bottom
-
-    def set_left_pressed(self, pressed):
-        self.left_pressed = pressed
     
-    def set_right_pressed(self, pressed):
-        self.right_pressed = pressed
-    
-    def set_up_pressed(self, pressed):
-        self.up_pressed = pressed
-    
-    def set_down_pressed(self, pressed):
-        self.down_pressed = pressed
-    
-    def get_mouse_pos(self):
-        return self.mouse_pos
-
-    def set_mouse_pos(self, pos):
-        self.mouse_pos = pos
     

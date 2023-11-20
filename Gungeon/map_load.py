@@ -4,11 +4,12 @@ import os
 from sprites import SpriteSheet
 
 class Tile:
-    def __init__(self, image, x, y):
+    def __init__(self, image, x, y, direction):
         self.image = image
         self.hitBox = pygame.Rect(x,y,50,50)
         self.x = x
         self.y = y
+        self.direction = direction
     def getX(self):
         return self.x
 
@@ -17,6 +18,9 @@ class Tile:
     
     def getHitBox(self):
         return self.hitBox
+    
+    def getDirection(self):
+        return self.direction
     
     def collides(self, rect):
         if self.hitBox.colliderect(rect):
@@ -52,34 +56,40 @@ def map_load():
     sprite_sheet = SpriteSheet(pygame.image.load(os.path.join('Assets', 'tileset.png')).convert_alpha())
     tiles = []
     walls = []
+    spawners = []
 
     for idx,row in enumerate(level['1']):
         for idy,cell in enumerate(row):
             if cell == "f":
                 image = sprite_sheet.get_image_wsize(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],48,48,(0,0,0))
-                tile = Tile(image, idy*50, idx*50)
+                tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)
-                #walls.append(tile)
+            if cell == "s":
+                image = sprite_sheet.get_image_wsize(sprite_locations["f"][0], sprite_locations["f"][1], sprite_locations["f"][2], sprite_locations["f"][3],48,48,(0,0,0))
+                tile = Tile(image, idy*50, idx*50, cell)
+                tiles.append(tile)
+                spawners.append(tile)
             elif cell == "L" or cell == "l" or cell=="R" or cell=="r" or cell=="W" or cell=="w":
                 image = sprite_sheet.get_image(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],3,(0,0,0))
-                tile = Tile(image, idy*50, idx*50)
+                tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)
                 walls.append(tile)
             elif cell == "b":
                 image = sprite_sheet.get_image_wsize(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],48,48,(0,0,0))
-                tile = Tile(image, idy*50, idx*50)
+                tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)
                 walls.append(tile)
             elif cell=="c" or cell=="C":
                 image = sprite_sheet.get_image(sprite_locations["f"][0], sprite_locations["f"][1], sprite_locations["f"][2], sprite_locations["f"][3],3,(0,0,0))
-                tile = Tile(image, idy*50, idx*50)
+                tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)
+
                 image = sprite_sheet.get_image(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],3,(0,0,0))
-                tile = Tile(image, idy*50, idx*50)
-                tiles.append(tile)
-                walls.append(tile)
+                tile2 = Tile(image, idy*50, idx*50, cell)
+                tiles.append(tile2)
+                walls.append(tile2)
     
-    return tiles, walls
+    return tiles, walls, spawners
 
 # 
 # 
