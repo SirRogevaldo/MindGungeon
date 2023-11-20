@@ -11,6 +11,7 @@ from commands import InputHandler
 from map_load import map_load, Tile
 import collision_detector
 from enemies import *
+import audio_manager
 
 #Constants
 WIDTH, HEIGHT = 1920, 1020
@@ -45,9 +46,13 @@ sniper = Sniper(0,0)
 spawner = Spawner()
 enemies = All_Enemies()
 
-#snake.register("move",food.verify_eaten)
-#food.register("eaten",score_system.update_score)
-#food.register("eaten",snake.increase_length)
+
+#audio
+audio_manager.music_play()
+
+
+player.register("wipe",bullets.wipe)
+player.register("wipe",audio_manager.Player_wipe_play)
 
 #Main Loop
 while True:

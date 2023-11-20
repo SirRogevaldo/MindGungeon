@@ -10,8 +10,8 @@ class All_Enemies(Subject):
     def add(self, enemy):
         self.enemies.append(enemy)
 
-    def remove(self, entity):
-        self.enemies.remove(entity)
+    def remove(self, enemy):
+        self.enemies.remove(enemy)
 
     def update(self):
         for enemy in self.enemies:

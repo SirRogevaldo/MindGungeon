@@ -9,6 +9,9 @@ class All_Bullets:
     def add(self, bullet):
         self.bullets.append(bullet)
     
+    def wipe(self,entity):
+        self.bullets = []
+    
     def move(self, walls,enemies, player):
         # Move Bullets    
         bullets_on_screen = []

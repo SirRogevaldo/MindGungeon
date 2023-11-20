@@ -23,6 +23,11 @@ class Gunman(Actor,Subject):
         self.health = 6
         self.speed = 4
 
+        #wipe ability
+        self.wipe_cooldown = 200
+        self.wipe_timer = 0
+        self.wipe_uses = 2
+
         # Player sprite
         self.player_sprite = GunnerSprite()
         #self.player_fsm = FSM() invinc frames
@@ -60,6 +65,15 @@ class Gunman(Actor,Subject):
         if self.health <= 0:
             print("You died")
             pygame.quit()
+        
+    def wipe(self):
+        if self.wipe_uses > 0 and pygame.time.get_ticks() - self.wipe_timer >= self.wipe_cooldown:
+            self.wipe_timer = pygame.time.get_ticks()
+            self.wipe_uses -= 1
+            print("Wipe")
+            self.notify(self,"wipe")
+        else:
+            print("No more wipes")
         
     
     def draw(self, display):

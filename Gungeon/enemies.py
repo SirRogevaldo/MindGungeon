@@ -3,7 +3,7 @@ import time, copy, time, random
 import pygame
 from enemySprites import EnemySprite
 from subject import Subject
-from all_enemies import All_Enemies
+import audio_manager
 
 # Class Creation
 class Monster(Subject):
@@ -13,6 +13,7 @@ class Monster(Subject):
         Subject.__init__(self)
 
         self.register("hit",self.get_shot)
+        self.register("hit",audio_manager.Enemy_hit_play)
 
         self.health = health
         self.speed = speed
@@ -86,6 +87,8 @@ class Shotgun(Monster):
     def __init__(self,x,y):
         super().__init__(x,y,6, 1)
 
+        self.register("shot",audio_manager.Shotgun_play)
+
         self.enemySprite = EnemySprite("Shotgun")
         self.recoil = 30
         self.atkSpeed = 10
@@ -132,6 +135,7 @@ class Shotgun(Monster):
             now = pygame.time.get_ticks()
             if now - self.cooldown >= 1000:
                 self.cooldown = pygame.time.get_ticks()
+                self.notify(self,"shot")
                 return True
 
         return False

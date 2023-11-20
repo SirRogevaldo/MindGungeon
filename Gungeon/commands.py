@@ -21,18 +21,23 @@ class Right(Command):
     def pressed(self,actor: Actor):
         actor.move(1,0)
 
+class Wipe(Command):
+    def pressed(self,actor: Actor):
+        actor.wipe()
+
 
 class InputHandler:
     command = {
         pygame.K_w: Up(),
         pygame.K_s: Down(),
         pygame.K_a: Left(),
-        pygame.K_d: Right()
+        pygame.K_d: Right(),
+        pygame.K_q: Wipe(),
     }
 
     def handleInput(self,keys):
 
-        wasd = [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d]
+        wasd = [pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_q]
 
         commands = []
 
