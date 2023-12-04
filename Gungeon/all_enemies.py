@@ -2,6 +2,8 @@ import math
 import pygame
 import collision_detector
 from subject import Subject
+from bullet import Bullet
+import audio_manager
 
 class All_Enemies(Subject):
     def __init__(self):
@@ -24,6 +26,17 @@ class All_Enemies(Subject):
             for command in decision:
                 enemy.move(command[0],command[1])
                 collision_detector.collision_entity_walls(enemy,walls)
+    
+    def attack(self, player):
+        bullets = []
+        shot = False
+        for enemy in self.enemies:
+            if enemy.fire():
+                bullets.append(Bullet(enemy.hitBox.x, enemy.hitBox.y, player.getX(), player.getY(), enemy.getBulletType()))
+                shot = True
+        if shot:
+            audio_manager.Shotgun_play(entity=None)
+        return bullets
 
     def draw(self, display):
         for enemy in self.enemies:

@@ -66,6 +66,14 @@ bullet_types = {
         'damage': 2,
         'friendly' : False
     },
+    'boss': {
+        'color' : "red",
+        'width' : 45,
+        'height': 45,
+        'speed' : 3,
+        'damage': 2,
+        'friendly' : False
+    },
     'none': { # might want to troll my making target shoot
         'color' : "gray",
         'width' : 5,

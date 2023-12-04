@@ -23,7 +23,7 @@ pygame.font.get_init()
 display = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption(TITLE)
 clock = pygame.time.Clock()
-
+pygame.mouse.set_visible(False)
 
 def Title_Screen(screen):
     intro = True
@@ -82,8 +82,6 @@ def game():
 
         powerup = False
 
-        pygame.mouse.set_visible(False)
-
         tiles,walls,spawnPoints,chests,fountain = map_load(str(level))
 
         #! DEFINE SPAWN POINT
@@ -92,14 +90,15 @@ def game():
 
         #Enemies and spawner
         shotgun = Shotgun(0,0)
-        mage = Mage(0,0)
-        sniper = Sniper(0,0)
-        target = Target(0,0)
+        mage    = Mage(0,0)
+        sniper  = Sniper(0,0)
+        target  = Target(0,0)
+        shade   = Shade(0,0)
+        smiley  = Smiley(0,0)
         spawner = Spawner()
         enemies = All_Enemies()
 
         # spawn enemies
-        test=0
         for t, cell in spawnPoints:
             if(cell == 's'):
                 enemies.add(spawner.spawnMonster(shotgun,t.getX(),t.getY()))
@@ -109,13 +108,15 @@ def game():
                 enemies.add(spawner.spawnMonster(mage,t.getX(),t.getY()))
             elif(cell == 'T'):
                 enemies.add(spawner.spawnMonster(target,t.getX(),t.getY()))
+            elif(cell == 'Y'):
+                enemies.add(spawner.spawnMonster(shade,t.getX(),t.getY()))
+            elif(cell == 'y'):
+                enemies.add(spawner.spawnMonster(smiley,t.getX(),t.getY()))
             else:
                 enemies.add(spawner.spawnMonster(shotgun,t.getX(),t.getY()))
-            test += 1
 
         #Main Loop
         while True:
-
             # EVENTS
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -126,17 +127,16 @@ def game():
                     if player.fire():
                         # shoot
                         x,y = pygame.mouse.get_pos()
-                        bullets.add(Bullet(player.getX(), player.getY()+35,x,y,player.getGun()))
+                        bullets.add([Bullet(player.getX(), player.getY()+35,x,y,player.getGun())])
+                        audio_manager.Player_shot_play(entity=None)
             
             #CHECK IF ALL ENEMIES ARE DEAD
             if (len(enemies.get_enemies()) == 0):
                 break
             
             #ENEMY ATTACKING
-            for enemy in enemies.get_enemies():
-                if enemy.fire():
-                    bullets.add(Bullet(enemy.hitBox.x, enemy.hitBox.y, player.getX(), player.getY(), enemy.getBulletType()))
-
+            bullets.add(enemies.attack(player))
+            
             #MOVING
             for command in inHandler.handleInput(pygame.key.get_pressed()):
                 command.pressed(player)
@@ -150,7 +150,7 @@ def game():
                     chests = []
             if fountain != None:
                 if player.rect.colliderect(fountain.getHitBox()):
-                    player.health = player.max_health
+                    player.health = min(player.health + player.max_health / 3, player.max_health)
                     tiles = [x for x in tiles if x != fountain]
                     fountain = None
 
@@ -159,7 +159,6 @@ def game():
 
             # Move Bullets    
             bullets.move(walls,enemies.get_enemies(),player)
-
 
             #update
             player.update()
@@ -180,8 +179,7 @@ def game():
             # Mouse
             drawCursor(player.getGun(), display)
 
-            pygame.draw.rect(display, (255,0,0), player.rect,2)
-
+            #pygame.draw.rect(display, (255,0,0), player.rect,2)
             for enemy in enemies.get_enemies():
                 pygame.draw.rect(display, (255,0,0), enemy.get_rect(),2)
 
@@ -194,7 +192,6 @@ def game():
             # Display powerup text
             if powerup:
                 display.blit(powerup_text, (WIDTH/3, 700))
-
 
             pygame.display.flip()
 

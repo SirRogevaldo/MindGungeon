@@ -36,6 +36,15 @@ W = up wall  (wall)
 w = down wall  (wall)
 b = box (walkable)
 c = chest (walkable)
+
+
+ENEMIES:
+S = sniper
+s = shotgun
+m = mage
+T = target
+Y = Shade Boss
+y = Smiley Boss
 -----------------------
 PowerUps:
 1 = Increased Max HP        (heals 1 heart)
@@ -50,7 +59,7 @@ PowerUps:
 8 = Increased Max HP        (heals 1 heart)
 9 = Surprise                ( Doggo? )
 
-0 = Golden Gun              (3 Damage, Incresed Size, Less Ammo, Super slow)
+0 = Golden Gun              (3 Damage, Increased Size, Less Ammo, Super slow)
 
 F = Fountain (Restores Health)
 
@@ -91,7 +100,7 @@ def map_load(level):
                 image = sprite_sheet.get_image_wsize(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],48,48,(0,0,0))
                 tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)
-            if cell == "s" or cell == "S" or cell == "m" or cell == "M" or cell == "T":
+            if cell == "s" or cell == "S" or cell == "m" or cell == "T" or cell == "Y" or cell == "y":
                 image = sprite_sheet.get_image_wsize(sprite_locations["f"][0], sprite_locations["f"][1], sprite_locations["f"][2], sprite_locations["f"][3],48,48,(0,0,0))
                 tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)

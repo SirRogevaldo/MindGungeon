@@ -7,7 +7,8 @@ class All_Bullets:
         self.bullets = []
 
     def add(self, bullet):
-        self.bullets.append(bullet)
+        for b in bullet:
+            self.bullets.append(b)
     
     def wipe(self,entity):
         self.bullets = []

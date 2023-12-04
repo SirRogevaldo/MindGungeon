@@ -104,8 +104,6 @@ class Gunman(Actor,Subject):
             return False
 
         return False
-
-        
         
     
     def draw(self, display):
