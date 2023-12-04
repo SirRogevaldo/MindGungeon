@@ -10,6 +10,38 @@ bullet_types = {
         'damage': 1,
         'friendly' : True
     },
+    'crossbow': {
+        'color' : "brown",
+        'width' : 10,
+        'height': 10,
+        'speed' : 10,
+        'damage': 2,
+        'friendly' : True
+    },
+    'missile': {
+        'color' : "red",
+        'width' : 5,
+        'height': 5,
+        'speed' : 15,
+        'damage': 1,
+        'friendly' : True
+    },
+    'cannon': {
+        'color' : "dark grey",
+        'width' : 25,
+        'height': 25,
+        'speed' : 10,
+        'damage': 1,
+        'friendly' : True
+    },
+    'golden': {
+        'color' : "yellow",
+        'width' : 30,
+        'height': 30,
+        'speed' : 5,
+        'damage': 3,
+        'friendly' : True
+    },
     'shotgun': {
         'color' : "blue",
         'width' : 10,
@@ -27,14 +59,14 @@ bullet_types = {
         'friendly' : False
     },
     'sniper': {
-        'color' : "gray",
+        'color' : "light gray",
         'width' : 25,
         'height': 25,
         'speed' : 12,
         'damage': 2,
         'friendly' : False
     },
-    'none': {
+    'none': { # might want to troll my making target shoot
         'color' : "gray",
         'width' : 5,
         'height': 5,

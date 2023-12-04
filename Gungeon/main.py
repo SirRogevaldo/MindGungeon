@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, os
 from bullet import Bullet
 from all_bullets import All_Bullets
 from all_enemies import All_Enemies
@@ -9,8 +9,8 @@ import collision_detector
 from enemies import *
 import audio_manager
 from stats_ui import Stats_ui
-
-import os
+from powerups import *
+from cursor import *
 
 #Constants
 WIDTH, HEIGHT = 1800, 900
@@ -25,7 +25,7 @@ pygame.display.set_caption(TITLE)
 clock = pygame.time.Clock()
 
 
-def main_menu():
+def Title_Screen(screen):
     intro = True
 
     Text_font = pygame.font.Font(os.path.join('Assets', 'Eight-Bit_Madness.ttf'), 80)
@@ -39,51 +39,19 @@ def main_menu():
                 if event.key == pygame.K_SPACE:
                     intro = False
         display.fill((0,0,0))
-        start_text = Text_font.render("PRESS SPACE TO START", False, (255,255,255))
-        display.blit(start_text, (WIDTH/3, HEIGHT/2))
+
+        match screen:
+            case "main":
+                start_text = Text_font.render("PRESS SPACE TO START", False, (255,255,255))
+                display.blit(start_text, (WIDTH/3, HEIGHT/2))
+            case "win":
+                start_text = Text_font.render("YOU WIN", False, (255,255,255))
+                display.blit(start_text, (WIDTH/3, HEIGHT/2))
+            case "lose":
+                start_text = Text_font.render("YOU LOSE", False, (255,255,255))
+                display.blit(start_text, (WIDTH/3, HEIGHT/2))
         pygame.display.flip()
         clock.tick(60)
-
-
-def game_over():
-    end = True
-
-    Text_font = pygame.font.Font(os.path.join('Assets', 'Eight-Bit_Madness.ttf'), 80)
-
-    while end:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    end = False
-        display.fill((0,0,0))
-        start_text = Text_font.render("YOU DIED", False, (255,255,255))
-        display.blit(start_text, (WIDTH/3, HEIGHT/2))
-        pygame.display.flip()
-        clock.tick(60)
-
-def game_win():
-    win = True
-
-    Text_font = pygame.font.Font(os.path.join('Assets', 'Eight-Bit_Madness.ttf'), 80)
-
-    while win:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    win = False
-        display.fill((0,0,0))
-        start_text = Text_font.render("YOU WIN", False, (255,255,255))
-        display.blit(start_text, (WIDTH/3, HEIGHT/2))
-        pygame.display.flip()
-        clock.tick(60)
-
-
 
 def game():
 
@@ -112,9 +80,11 @@ def game():
 
         bullets.wipe(entity=None)
 
+        powerup = False
+
         pygame.mouse.set_visible(False)
 
-        tiles,walls,spawnPoints = map_load(str(level))
+        tiles,walls,spawnPoints,chests,fountain = map_load(str(level))
 
         #! DEFINE SPAWN POINT
         player.setX(WIDTH/10)
@@ -156,7 +126,7 @@ def game():
                     if player.fire():
                         # shoot
                         x,y = pygame.mouse.get_pos()
-                        bullets.add(Bullet(player.getX(), player.getY()+35,x,y,"normal"))
+                        bullets.add(Bullet(player.getX(), player.getY()+35,x,y,player.getGun()))
             
             #CHECK IF ALL ENEMIES ARE DEAD
             if (len(enemies.get_enemies()) == 0):
@@ -171,6 +141,18 @@ def game():
             for command in inHandler.handleInput(pygame.key.get_pressed()):
                 command.pressed(player)
                 collision_detector.collision_entity_walls(player,walls)
+                
+            # Check chest collision
+            if chests != []:
+                powerup,powerup_text = check_player_powerups(player, chests)
+                if powerup:
+                    tiles = [x for x in tiles if x not in chests]
+                    chests = []
+            if fountain != None:
+                if player.rect.colliderect(fountain.getHitBox()):
+                    player.health = player.max_health
+                    tiles = [x for x in tiles if x != fountain]
+                    fountain = None
 
             # Move Enemies
             enemies.move(walls,player)
@@ -196,10 +178,7 @@ def game():
             enemies.draw(display)
 
             # Mouse
-            x,y = pygame.mouse.get_pos()
-            pygame.draw.circle(display, (255,0,0), (x, y), 15)
-            pygame.draw.circle(display, (0,  0,0), (x, y), 10)
-            pygame.draw.circle(display, (255,0,0), (x, y),  5)
+            drawCursor(player.getGun(), display)
 
             pygame.draw.rect(display, (255,0,0), player.rect,2)
 
@@ -212,6 +191,10 @@ def game():
             bullets.draw(display)
 
             stats_ui.draw(display,player,level)
+            # Display powerup text
+            if powerup:
+                display.blit(powerup_text, (WIDTH/3, 700))
+
 
             pygame.display.flip()
 
@@ -220,12 +203,16 @@ def game():
     return True
 
 if __name__ == "__main__":
-    main_menu()
-    win = game()
-    if win:
-        game_win()
-    else:
-        game_over()
+    Title_Screen("main")
+    over = False
+
+    while(not over):
+        win = game()
+        if win:
+            Title_Screen("win")
+            over = True
+        else:
+            Title_Screen("lose")
     
     pygame.quit()
     sys.exit()

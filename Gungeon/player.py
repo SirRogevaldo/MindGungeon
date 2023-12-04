@@ -36,6 +36,8 @@ class Gunman(Actor,Subject):
         self.wipe_timer = 0
         self.wipe_uses = 2
 
+        self.player_gun = "normal"
+
         # Player sprite
         self.player_sprite = GunnerSprite()
         #self.player_fsm = FSM() invinc frames
@@ -125,6 +127,9 @@ class Gunman(Actor,Subject):
     def getVelY(self):
         return self.velY
 
+    def getGun(self):
+        return self.player_gun
+
     #-------------------
 
     def setX(self, x):
@@ -153,5 +158,8 @@ class Gunman(Actor,Subject):
     
     def set_rect_bottom(self, bottom):
         self.rect.bottom = bottom
+    
+    def setGun(self, gun):
+        self.player_gun = gun
     
     
