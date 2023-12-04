@@ -1,14 +1,6 @@
 import pygame, os
 from sprites import SpriteSheet
 
-animation_dict = {
-    "RIGHT": (0,6),
-    "LEFT": (6,12),
-    "DOWN": (12,18),
-    "UP":  (18,24),
-    "IDLE": (24,28)
-}
-
 class EnemySprite(pygame.sprite.Sprite):
     def __init__(self, enemy):
         super().__init__()
