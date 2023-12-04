@@ -1,66 +1,58 @@
 import math
-import time, copy, time, random
+import random
 import pygame
 from enemySprites import EnemySprite
 from subject import Subject
 import audio_manager
 
-# Class Creation
 class Monster(Subject):
-    # Constructor:
     def __init__(self, x, y, health, speed):
-        # Base attributes
         Subject.__init__(self)
 
-        self.register("hit",self.get_shot)
-        self.register("hit",audio_manager.Enemy_hit_play)
+        self.register("hit", self.get_shot)
+        self.register("hit", audio_manager.Enemy_hit_play)
 
         self.health = health
         self.speed = speed
         self.hitBox = pygame.Rect(x, y, 50, 70)
-        self.lastX = int(self.hitBox.x)
-        self.lastY = int(self.hitBox.y)
-        self.velX = 0
-        self.velY = 0
+        self.lastX, self.lastY = int(self.hitBox.x), int(self.hitBox.y)
+        self.velX, self.velY = 0, 0
         self.cooldown = pygame.time.get_ticks()
         self.bulletType = "shotgun"
         self.enemySprite = EnemySprite("Shotgun")
+        self.awake = False
+
+        self.chamber = 6
+        self.maxChamber = 6
+        self.reloadSpeed = 1000
 
     def draw(self, display):
         self.enemySprite.draw(display, self.hitBox)
 
     def get_shot(self, entity):
-
-        #print(entity)
         print("Enemy got shot")
         self.health -= entity.get_damage()
-    
-    def move(self, dx,dy):
 
-        self.velX = 0
-        self.velY = 0
+    def move(self, dx, dy):
+        self.velX, self.velY = 0, 0
+        self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
 
-        self.last_x = self.hitBox.x
-        self.last_y = self.hitBox.y
-
-        # Move the rect
-        if (dx != 0):
+        if dx != 0:
             self.hitBox.x += dx * self.speed
             self.velX = dx
-        elif (dy != 0):
+        elif dy != 0:
             self.hitBox.y += dy * self.speed
             self.velY = dy
 
-    # Clone Method:
     def clone(self):
         raise NotImplementedError("Subclasses must implement this method")
-    
-    def moveDecision(self,playerRect):
+
+    def moveDecision(self, playerRect):
         raise NotImplementedError("Subclasses must implement this method")
 
     def fire(self):
         raise NotImplementedError("Subclasses must implement this method")
-    
+
     def get_rect(self):
         return self.hitBox
 
@@ -69,7 +61,7 @@ class Monster(Subject):
 
     def getVelY(self):
         return self.velY
-    
+
     def getBulletType(self):
         return self.bulletType
 
@@ -78,96 +70,158 @@ class Monster(Subject):
 
     def setX(self, x):
         self.hitBox.x = x
-    
+
     def setY(self, y):
         self.hitBox.y = y
-    
-    
+
 class Shotgun(Monster):
-    def __init__(self,x,y):
-        super().__init__(x,y,6, 1)
-
-        self.register("shot",audio_manager.Shotgun_play)
-
+    def __init__(self, x, y):
+        super().__init__(x, y, 6, 1)
+        self.register("shot", audio_manager.Shotgun_play)
         self.enemySprite = EnemySprite("Shotgun")
-        self.recoil = 30
-        self.atkSpeed = 10
-        self.aura = random.randint(700,1000)
+        self.bulletType = "shotgun"
+        self.atkSpeed = 500
+        self.aura = random.randint(700, 1000)
         self.awake = False
-    
+
     def clone(self, x, y):
-        return Shotgun(x, y)  
-    
+        return Shotgun(x, y)
+
     def moveDecision(self, playerRect):
-
-        self.last_x = self.hitBox.x
-        self.last_y = self.hitBox.y
-
-        xx = playerRect.x - self.hitBox.x # enemy to left of player
-        yy = playerRect.y - self.hitBox.y # enemy to above of player
+        self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
+        xx, yy = playerRect.x - self.hitBox.x, playerRect.y - self.hitBox.y
         moveQueue = []
 
-        rand = random.randint(1,100)
-        dist = math.sqrt((playerRect.x-self.hitBox.x)**2 + (playerRect.y-self.hitBox.y)**2)
-        if(dist < self.aura):
+        rand = random.randint(1, 100)
+        dist = math.sqrt((playerRect.x - self.hitBox.x) ** 2 + (playerRect.y - self.hitBox.y) ** 2)
+
+        if dist < self.aura:
             self.awake = True
-        
-        if(rand < 10):
+
+        if rand < 10:
             self.awake = False
 
-        if(self.awake):
-            if(xx > 0):
-                moveQueue.append((1,0))
-            elif(xx < 0):
-                moveQueue.append((-1,0))
-            if(yy > 0):
-                moveQueue.append((0,1))
-            elif(yy < 0):
-                moveQueue.append((0,-1))
+        if self.awake:
+            moveQueue.extend([(1, 0) if xx > 0 else (-1, 0), (0, 1) if yy > 0 else (0, -1)])
         else:
-            moveQueue.append((0,-0))
+            moveQueue.append((0, 0))
 
         return moveQueue
-    
-    def fire(self):
 
-        if(self.awake):
-            now = pygame.time.get_ticks()
-            if now - self.cooldown >= 1000:
-                self.cooldown = pygame.time.get_ticks()
-                self.notify(self,"shot")
-                return True
+    def fire(self):
+        now = pygame.time.get_ticks()
+
+        if now - self.cooldown < self.atkSpeed:
+            return False
+
+        if self.chamber > 0:
+            self.cooldown, self.chamber = now, self.chamber - 1
+            return True
+
+        if now - self.cooldown >= self.reloadSpeed:
+            self.cooldown, self.chamber = now, self.maxChamber
+            return False
 
         return False
 
 class Mage(Monster):
-    def __init__(self,x,y):
-        super().__init__(x,y,4, 6)
+    def __init__(self, x, y):
+        super().__init__(x, y, 4, 1)
+        self.bulletType = "magic"
+        self.aura = random.randint(1000, 1200)
 
-        self.mana = 360
-        self.manaRegen = 1
+    def clone(self, x, y):
+        return Mage(x, y)
 
-    def clone(self,x,y):
-        return Mage(x,y)
-    
-    def fire(self):
-        return 
-    
-class Sniper(Monster):
-    def __init__(self,x,y):
-        super().__init__(x,y,6, 4)
-        
-        self.cooldown = 30
-
-    def clone(self,x,y):
-        return Sniper(x,y)
-    
     def moveDecision(self, playerRect):
-        pass
+        self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
+        xx, yy = playerRect.x - self.hitBox.x, playerRect.y - self.hitBox.y
+        moveQueue = []
+
+        rand = random.randint(1, 100)
+        dist = math.sqrt((playerRect.x - self.hitBox.x) ** 2 + (playerRect.y - self.hitBox.y) ** 2)
+
+        if dist < self.aura:
+            self.awake = True
+
+        if rand < 5:
+            self.awake = False
+
+        if self.awake:
+            dx = min(self.speed, abs(xx)) * (1 if xx > 0 else -1)
+            dy = min(self.speed, abs(yy)) * (1 if yy > 0 else -1)
+
+            moveQueue.extend([(dx, 0), (0, dy)])
+        else:
+            moveQueue.append((0, 0))
+
+        return moveQueue
+
+    def fire(self):
+        if self.awake:
+            now = pygame.time.get_ticks()
+            if now - self.cooldown >= 2300:
+                self.cooldown = now
+                return True
+
+        return False
+
+class Sniper(Monster):
+    def __init__(self, x, y):
+        super().__init__(x, y, 6, 1)
+        self.cooldown, self.aura = 30, random.randint(1000, 1200)
+        self.bulletType = "sniper"
+
+    def clone(self, x, y):
+        return Sniper(x, y)
+
+    def moveDecision(self, playerRect):
+        self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
+        xx, yy = playerRect.x - self.hitBox.x, playerRect.y - self.hitBox.y
+        moveQueue = []
+
+        rand = random.randint(1, 100)
+        dist = math.sqrt((playerRect.x - self.hitBox.x) ** 2 + (playerRect.y - self.hitBox.y) ** 2)
+
+        if dist < self.aura:
+            self.awake = True
+
+        if rand < 50:
+            self.awake = False
+
+        if self.awake:
+            moveQueue.extend([(1, 0) if xx > 0 else (-1, 0), (0, 1) if yy > 0 else (0, -1)])
+        else:
+            moveQueue.append((0, 0))
+
+        return moveQueue
+
+    def fire(self):
+        if self.awake:
+            now = pygame.time.get_ticks()
+            if now - self.cooldown >= 2000:
+                self.cooldown = now
+                return True
+
+        return False
+    
+class Target(Monster):
+    def __init__(self, x, y):
+        super().__init__(x, y, 1, 0)
+        self.bulletType = "none"
+
+    def clone(self, x, y):
+        return Target(x, y)
+
+    def moveDecision(self, playerRect):
+        moveQueue = []
+        moveQueue.append((0, 0))
+        return moveQueue
 
     def fire(self):
         pass
-    
+
+
 class Spawner:
-    def spawnMonster(self, prototype,x,y) -> Monster:
-        return prototype.clone(x,y)
+    def spawnMonster(self, prototype, x, y) -> Monster:
+        return prototype.clone(x, y)

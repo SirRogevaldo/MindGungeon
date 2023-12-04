@@ -20,8 +20,16 @@ class Gunman(Actor,Subject):
         self.velY = 0
         self.color = (92, 64, 51)
 
+        self.coolTimer = pygame.time.get_ticks()
+
+        # stats
+        self.max_health = 6
         self.health = 6
         self.speed = 4
+        self.chamber = 6
+        self.maxChamber = 6
+        self.cooldown = 300
+        self.reloadSpeed = 800
 
         #wipe ability
         self.wipe_cooldown = 200
@@ -64,7 +72,6 @@ class Gunman(Actor,Subject):
         self.health -= entity.get_damage()
         if self.health <= 0:
             print("You died")
-            pygame.quit()
         
     def wipe(self):
         if self.wipe_uses > 0 and pygame.time.get_ticks() - self.wipe_timer >= self.wipe_cooldown:
@@ -74,6 +81,29 @@ class Gunman(Actor,Subject):
             self.notify(self,"wipe")
         else:
             print("No more wipes")
+
+    def fire(self):
+        now = pygame.time.get_ticks()
+
+        # Check if enough time has passed since the last shot or reload
+        if now - self.cooldown < 300:
+            return False
+
+        # Check if there are bullets in the chamber
+        if self.chamber > 0:
+            self.cooldown = now
+            self.chamber -= 1
+            return True
+
+        # Check if enough time has passed since the last reload
+        if now - self.cooldown >= self.reloadSpeed:
+            self.cooldown = now
+            self.chamber = self.maxChamber
+            return False
+
+        return False
+
+        
         
     
     def draw(self, display):

@@ -17,20 +17,20 @@ class Transition:
         self._from = _from
         self._to = _to
 
-class Idle(State):
+class Default(State):
     def __init__(self) -> None:
         super().__init__(self.__class__.__name__)
 
     def update(self, object):
-        print("IDLE Animation")
+        print("Default Animation")
         return super().update(object)
     
-class Walk(State):
+class Invincible(State):
     def __init__(self) -> None:
         super().__init__(self.__class__.__name__)
 
     def update(self, object):
-        print("WALKING Animation")
+        print("Invincible Animation")
         return super().update(object)
 
 class Death(State):

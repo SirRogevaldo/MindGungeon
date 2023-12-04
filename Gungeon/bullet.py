@@ -4,32 +4,49 @@ import pygame
 bullet_types = {
     'normal': {
         'color' : "orange",
-        'width' : 20,
-        'height': 20,
+        'width' : 10,
+        'height': 10,
         'speed' : 10,
         'damage': 1,
         'friendly' : True
     },
     'shotgun': {
         'color' : "blue",
-        'width' : 30,
-        'height': 30,
-        'speed' : 5,
+        'width' : 10,
+        'height': 10,
+        'speed' : 3,
+        'damage': 1,
+        'friendly' : False
+    },
+    'magic': {
+        'color' : "light blue",
+        'width' : 5,
+        'height': 5,
+        'speed' : 15,
         'damage': 1,
         'friendly' : False
     },
     'sniper': {
-        'color' : "blue",
-        'width' : 10,
-        'height': 10,
-        'speed' : 10,
+        'color' : "gray",
+        'width' : 25,
+        'height': 25,
+        'speed' : 12,
         'damage': 2,
+        'friendly' : False
+    },
+    'none': {
+        'color' : "gray",
+        'width' : 5,
+        'height': 5,
+        'speed' : 1,
+        'damage': 1,
         'friendly' : False
     }
 }
 
 class Bullet:
     def __init__(self, x, y, targetx, targety, type):
+        self.type = type
         self.rect = pygame.Rect(x,y,bullet_types[type].get('width'),bullet_types[type].get('height'))
         self.color = bullet_types[type].get('color')
         self.speed = bullet_types[type].get('speed')
@@ -51,8 +68,8 @@ class Bullet:
         return self.rect
 
     def draw(self, surface):
-        pygame.draw.circle(surface, "black", (self.x, self.y), 12)
-        pygame.draw.circle(surface, self.color, (self.x, self.y), 10)
+        pygame.draw.circle(surface, "black", (self.x, self.y), bullet_types[self.type].get('width') + 2)
+        pygame.draw.circle(surface, self.color, (self.x, self.y), bullet_types[self.type].get('width'))
     
     def get_damage(self):
         return self.damage

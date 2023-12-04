@@ -34,6 +34,8 @@ l = left wall  (wall)
 r = right wall  (wall)
 W = up wall  (wall)
 w = down wall  (wall)
+b = box (walkable)
+c = chest (walkable)
 
 """
 sprite_locations ={
@@ -49,26 +51,32 @@ sprite_locations ={
     "C": (224, 192, 15, 15),
 }
 
-
-def map_load():
+def map_names():
     with open("map.json", "r") as f:
-        level = json.load(f)
+        level_file = json.load(f)
+    return level_file.keys()
+
+
+def map_load(level):
+    with open("map.json", "r") as f:
+        level_file = json.load(f)
     sprite_sheet = SpriteSheet(pygame.image.load(os.path.join('Assets', 'tileset.png')).convert_alpha())
     tiles = []
     walls = []
+    chests = []
     spawners = []
 
-    for idx,row in enumerate(level['1']):
+    for idx,row in enumerate(level_file[level]):
         for idy,cell in enumerate(row):
             if cell == "f":
                 image = sprite_sheet.get_image_wsize(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],48,48,(0,0,0))
                 tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)
-            if cell == "s":
+            if cell == "s" or cell == "S" or cell == "m" or cell == "M" or cell == "T":
                 image = sprite_sheet.get_image_wsize(sprite_locations["f"][0], sprite_locations["f"][1], sprite_locations["f"][2], sprite_locations["f"][3],48,48,(0,0,0))
                 tile = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile)
-                spawners.append(tile)
+                spawners.append((tile,cell))
             elif cell == "L" or cell == "l" or cell=="R" or cell=="r" or cell=="W" or cell=="w":
                 image = sprite_sheet.get_image(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],3,(0,0,0))
                 tile = Tile(image, idy*50, idx*50, cell)
@@ -87,7 +95,7 @@ def map_load():
                 image = sprite_sheet.get_image(sprite_locations[cell][0], sprite_locations[cell][1], sprite_locations[cell][2], sprite_locations[cell][3],3,(0,0,0))
                 tile2 = Tile(image, idy*50, idx*50, cell)
                 tiles.append(tile2)
-                walls.append(tile2)
+                chests.append(tile2)
     
     return tiles, walls, spawners
 

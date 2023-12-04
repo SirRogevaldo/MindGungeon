@@ -1,4 +1,4 @@
-from state import State, Walk, Idle, Death, Transition
+from state import State, Default, Invincible, Death, Transition
 
 class FSM:
     def __init__(self, states: list[State], transitions: dict[Transition]) -> None:
@@ -16,23 +16,22 @@ class FSM:
                 self.current = trans._to
                 self.current.enter()
             self.current.update(object)
-
+            
             if self.current == self.end:
                 self.current.exit()
                 return False
             return True
         
 if __name__ == "__main__":
-    walk = Walk()
-    idle = Idle()
+    default = Default()
+    invincible = Invincible()
     death = Death()
 
-    states = [walk, idle, death]
+    states = [default, invincible, death]
     transitions = {
-        "halt":   Transition(walk, idle),
-        "sprint": Transition(idle, walk),
-        "wDie":   Transition(walk, death), # preciso 2?
-        "sDie":   Transition(idle, death)
+        "damaged":   Transition(default, invincible),
+        "composed": Transition(invincible, default),
+        "dead":   Transition(default, death)
     }
     
     fsm = FSM(states, transitions)
