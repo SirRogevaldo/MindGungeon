@@ -1,5 +1,12 @@
 import pygame
 
+"""
+
+    Cursor:
+    -This Function is responsible for drawing the cursor on the screen
+
+"""
+
 def drawCursor(type, display):
     x, y = pygame.mouse.get_pos()
 

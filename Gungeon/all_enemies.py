@@ -5,6 +5,14 @@ from subject import Subject
 from bullet import Bullet
 import audio_manager
 
+"""
+    All_Enemies class:
+
+    -Singleton class
+    -This class is used to store all the enemies in the game. It is used to move, draw, and make all enemies attack in the game.
+
+"""
+
 class All_Enemies(Subject):
     def __init__(self):
         self.enemies = []

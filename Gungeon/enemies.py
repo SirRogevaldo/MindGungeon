@@ -5,6 +5,15 @@ from enemySprites import EnemySprite
 from subject import Subject
 import audio_manager
 
+"""
+
+    Enemies.py:
+
+    - This file contains all the logic behind enemies, responsible for implementing the **prototype** pattern for spawning the enemies.
+
+
+"""
+
 class Monster(Subject):
     def __init__(self, x, y, health, speed):
         Subject.__init__(self)
@@ -169,8 +178,10 @@ class Mage(Monster):
 class Sniper(Monster):
     def __init__(self, x, y):
         super().__init__(x, y, 6, 1)
-        self.cooldown, self.aura = 30, random.randint(1000, 1200)
+        self.aura = random.randint(1000, 1200)
+        self.cooldown = 30
         self.bulletType = "sniper"
+        
 
     def clone(self, x, y):
         return Sniper(x, y)
@@ -208,7 +219,7 @@ class Sniper(Monster):
 
 class Shade(Monster):
     def __init__(self, x, y):
-        super().__init__(x, y, 45, 5)
+        super().__init__(x, y, 45, 1)
         self.cooldown, self.aura = 30, 5000
         self.bulletType = "boss"
         self.awake = False
@@ -220,7 +231,9 @@ class Shade(Monster):
         return Shade(x, y)
 
     def moveDecision(self, playerRect):
+
         self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
+        xx, yy = playerRect.x - self.hitBox.x, playerRect.y - self.hitBox.y
         moveQueue = []
 
         rand = random.randint(1, 100)
@@ -229,23 +242,38 @@ class Shade(Monster):
         if dist < self.aura:
             self.awake = True
 
+        if rand < 50:
+            self.awake = False
+
         if self.awake:
-            # Introduce periodic changes in direction
-            now = pygame.time.get_ticks()
-            if now > self.next_change_direction:
-                self.next_change_direction = now + random.randint(2000, 5000)
-                moveQueue.extend([(random.choice([-1, 1]), 0), (0, random.choice([-1, 1]))])
-            else:
-                moveQueue.extend([(1, 0) if random.choice([True, False]) else (-1, 0),
-                                  (0, 1) if random.choice([True, False]) else (0, -1)])
+            moveQueue.extend([(1, 0) if xx > 0 else (-1, 0), (0, 1) if yy > 0 else (0, -1)])
         else:
             moveQueue.append((0, 0))
-        
-        #! REMOVER
-        moveQueue = []
-        moveQueue.append((0, 0))
 
         return moveQueue
+        
+        #self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
+        #moveQueue = []
+        #
+        #rand = random.randint(1, 100)
+        #dist = math.sqrt((playerRect.x - self.hitBox.x) ** 2 + (playerRect.y - self.hitBox.y) ** 2)
+        #
+        #if dist < self.aura:
+        #    self.awake = True
+        #
+        #if self.awake:
+            # Introduce periodic changes in direction
+        #    now = pygame.time.get_ticks()
+        #    if now > self.next_change_direction:
+        #        self.next_change_direction = now + random.randint(2000, 5000)
+        #        moveQueue.extend([(random.choice([-1, 1]), 0), (0, random.choice([-1, 1]))])
+        #    else:
+        #        moveQueue.extend([(1, 0) if random.choice([True, False]) else (-1, 0),
+        #                          (0, 1) if random.choice([True, False]) else (0, -1)])
+        #else:
+        #    moveQueue.append((0, 0))
+        #
+        #return moveQueue
 
     def fire(self):
         if self.awake:
@@ -258,7 +286,7 @@ class Shade(Monster):
 
 class Smiley(Monster):
     def __init__(self, x, y):
-        super().__init__(x, y, 45, 5)
+        super().__init__(x, y, 45, 1)
         self.cooldown, self.aura = 30, 5000
         self.bulletType = "boss"
         self.awake = False
@@ -270,7 +298,9 @@ class Smiley(Monster):
         return Smiley(x, y)
 
     def moveDecision(self, playerRect):
+
         self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
+        xx, yy = playerRect.x - self.hitBox.x, playerRect.y - self.hitBox.y
         moveQueue = []
 
         rand = random.randint(1, 100)
@@ -279,23 +309,39 @@ class Smiley(Monster):
         if dist < self.aura:
             self.awake = True
 
+        if rand < 50:
+            self.awake = False
+
         if self.awake:
-            # Introduce periodic changes in direction
-            now = pygame.time.get_ticks()
-            if now > self.next_change_direction:
-                self.next_change_direction = now + random.randint(2000, 5000)
-                moveQueue.extend([(random.choice([-1, 1]), 0), (0, random.choice([-1, 1]))])
-            else:
-                moveQueue.extend([(1, 0) if random.choice([True, False]) else (-1, 0),
-                                  (0, 1) if random.choice([True, False]) else (0, -1)])
+            moveQueue.extend([(1, 0) if xx > 0 else (-1, 0), (0, 1) if yy > 0 else (0, -1)])
         else:
             moveQueue.append((0, 0))
-        
-        #! REMOVER
-        moveQueue = []
-        moveQueue.append((0, 0))
 
         return moveQueue
+
+
+        #self.last_x, self.last_y = self.hitBox.x, self.hitBox.y
+        #moveQueue = []
+        #
+        #rand = random.randint(1, 100)
+        #dist = math.sqrt((playerRect.x - self.hitBox.x) ** 2 + (playerRect.y - self.hitBox.y) ** 2)
+        #
+        #if dist < self.aura:
+        #    self.awake = True
+        #
+        #if self.awake:
+        #    # Introduce periodic changes in direction
+        #    now = pygame.time.get_ticks()
+        #    if now > self.next_change_direction:
+        #        self.next_change_direction = now + random.randint(2000, 5000)
+        #        moveQueue.extend([(random.choice([-1, 1]), 0), (0, random.choice([-1, 1]))])
+        #    else:
+        #        moveQueue.extend([(1, 0) if random.choice([True, False]) else (-1, 0),
+        #                          (0, 1) if random.choice([True, False]) else (0, -1)])
+        #else:
+        #    moveQueue.append((0, 0))
+        #
+        #return moveQueue
 
     def fire(self):
         if self.awake:

@@ -4,23 +4,24 @@ from actor import Actor
 from playerSprite import GunnerSprite
 from subject import Subject
 import math
+"""
 
+    Gunman Class
+    - Inherits from Actor and Subject
+    - Reponsible for player movement logic and player stats
+
+"""
 
 #Gunman Class
 class Gunman(Actor,Subject):
     def __init__(self, x, y):
         Subject.__init__(self)
 
-        self.register("hit", self.got_shot)
-
         self.rect = pygame.Rect(int(x), int(y), 50, 70)
         self.last_x = int(x)
         self.last_y = int(y)
         self.velX = 0
         self.velY = 0
-        self.color = (92, 64, 51)
-
-        self.coolTimer = pygame.time.get_ticks()
 
         # stats
         self.max_health = 6

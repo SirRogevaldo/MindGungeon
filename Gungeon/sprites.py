@@ -1,5 +1,11 @@
 import pygame
 
+"""
+    SpriteSheet class:
+    -This class is used to load spritesheets and get images from them
+
+"""
+
 class SpriteSheet():
     def __init__(self, image):
         self.sheet = image

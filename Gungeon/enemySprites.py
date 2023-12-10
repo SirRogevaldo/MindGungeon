@@ -1,6 +1,14 @@
 import pygame, os
 from sprites import SpriteSheet
 
+"""
+
+    Enemy Sprites:
+
+    - This file contains the class responsible for drawing the enemy sprites, inherits the SpriteSheet class from sprites.py
+
+"""
+
 class EnemySprite(pygame.sprite.Sprite):
     def __init__(self, enemy):
         super().__init__()

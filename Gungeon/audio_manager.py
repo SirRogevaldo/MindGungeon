@@ -1,6 +1,14 @@
 import os
 import pygame
 
+"""
+
+    Audio Manager
+
+    -This File contains all functions used to play the audio in the game.
+
+"""
+
 pygame.mixer.init()
 # Music
 pygame.mixer.music.load(os.path.join('Assets', 'Sounds', '1-TheHollowHowl.mp3'))

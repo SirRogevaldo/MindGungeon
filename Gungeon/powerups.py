@@ -1,6 +1,12 @@
 import pygame
 import os
 
+"""
+    Powerups:
+
+    -file containing the logic behind obtaining powerups and updating the player accordingly
+"""
+
 def check_player_powerups(player, chests):
     powerup = False
 

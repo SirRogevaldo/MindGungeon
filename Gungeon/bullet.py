@@ -1,6 +1,15 @@
 import math
 import pygame
 
+"""
+
+    Bullet class:
+
+    -This class is used to create a bullet object. It is used to move and draw the bullet.
+    -Also contains the stats for each bullet type.
+
+"""
+
 bullet_types = {
     'normal': {
         'color' : "orange",
@@ -87,15 +96,19 @@ bullet_types = {
 class Bullet:
     def __init__(self, x, y, targetx, targety, type):
         self.type = type
-        self.rect = pygame.Rect(x,y,bullet_types[type].get('width'),bullet_types[type].get('height'))
+
+        self.width = bullet_types[type].get('width')
+        self.height = bullet_types[type].get('height')
+        self.x = x - self.width
+        self.y = y - self.height
+
+        self.rect = pygame.Rect(self.x,self.y,self.width*2,self.height*2)
         self.color = bullet_types[type].get('color')
         self.speed = bullet_types[type].get('speed')
         angle = math.atan2(targety-y, targetx-x) #get angle to target in radians
         #print('Angle in degrees:', int(angle*180/math.pi))
         self.dx = math.cos(angle)*self.speed
-        self.dy = math.sin(angle)*self.speed
-        self.x = x
-        self.y = y
+        self.dy = math.sin(angle)*self.speed 
 
         #
         self.friendly = bullet_types[type].get('friendly')
@@ -108,8 +121,11 @@ class Bullet:
         return self.rect
 
     def draw(self, surface):
-        pygame.draw.circle(surface, "black", (self.x, self.y), bullet_types[self.type].get('width') + 2)
-        pygame.draw.circle(surface, self.color, (self.x, self.y), bullet_types[self.type].get('width'))
+        pygame.draw.circle(surface, "black", (self.x+self.width, self.y+self.height), bullet_types[self.type].get('width') + 2)
+        pygame.draw.circle(surface, self.color, (self.x+self.width, self.y+self.height), bullet_types[self.type].get('width'))
+        #Debug
+        #pygame.draw.rect(surface, (255,0,0), self.get_rect(),2)
+
     
     def get_damage(self):
         return self.damage

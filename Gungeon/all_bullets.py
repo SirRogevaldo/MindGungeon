@@ -2,6 +2,14 @@ import math
 import pygame
 import collision_detector
 
+"""
+
+    All_Bullets class:
+
+    -Singleton class
+    -This class is used to store all the bullets in the game. It is used to move and draw all the bullets in the game.
+
+"""
 class All_Bullets:
     def __init__(self):
         self.bullets = []

@@ -1,3 +1,10 @@
+"""
+    Subject class:
+    - class that implements the **Observer** pattern used by the player and enemies, mainly for damage taking and the player's bullet wipe ability
+
+"""
+
+
 class Subject:
     def __init__(self):
         self.events = dict()

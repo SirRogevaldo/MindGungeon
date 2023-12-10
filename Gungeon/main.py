@@ -12,6 +12,10 @@ from stats_ui import Stats_ui
 from powerups import *
 from cursor import *
 
+"""
+    Main file for the game
+    Contains the main game loop and the main game logic
+"""
 #Constants
 WIDTH, HEIGHT = 1800, 900
 TITLE = "Mind Gungeon"
@@ -65,6 +69,7 @@ def game():
     #player event registers 
     player.register("wipe",bullets.wipe)
     player.register("wipe",audio_manager.Player_wipe_play)
+    player.register("hit", player.got_shot)
 
     # InputHandler (Controls)
     inHandler = InputHandler()
@@ -84,7 +89,7 @@ def game():
 
         tiles,walls,spawnPoints,chests,fountain = map_load(str(level))
 
-        #! DEFINE SPAWN POINT
+        #DEFINE SPAWN POINT
         player.setX(WIDTH/10)
         player.setY(HEIGHT/2)
 
@@ -179,9 +184,10 @@ def game():
             # Mouse
             drawCursor(player.getGun(), display)
 
+            # DEBUG HITBOXES
             #pygame.draw.rect(display, (255,0,0), player.rect,2)
-            for enemy in enemies.get_enemies():
-                pygame.draw.rect(display, (255,0,0), enemy.get_rect(),2)
+            #for enemy in enemies.get_enemies():
+            #    pygame.draw.rect(display, (255,0,0), enemy.get_rect(),2)
 
             player.draw(display)
 

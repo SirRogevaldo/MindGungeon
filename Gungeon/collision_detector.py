@@ -1,3 +1,12 @@
+"""
+    Collision detector:
+
+    -This file contains all the collision detection functions used in the game.
+    -This file is used to detect collisions between entities and walls, bullets and walls, bullets and enemies, and bullets and the player and to handle those collisions.
+    
+"""
+
+
 def collision_entity_walls(entity, walls):
 
     for wall in walls:

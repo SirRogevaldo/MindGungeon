@@ -1,6 +1,13 @@
 import pygame
 from actor import Actor
 
+"""
+
+    Commands:
+    -This file is responsible for implementing the **command** pattern, used to process player's inputs to control the character
+
+"""
+
 class Command:
     def pressed(self, actor: Actor):
         raise NotImplementedError("Subclasses must implement this method")

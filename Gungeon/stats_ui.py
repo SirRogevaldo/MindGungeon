@@ -2,6 +2,12 @@ from sprites import SpriteSheet
 import pygame
 import os
 
+"""
+    Stats UI:
+    -This class is used to draw the players' stats on the screen
+
+"""
+
 class Stats_ui():
 
     def __init__(self):

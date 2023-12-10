@@ -3,6 +3,14 @@ import json
 import os
 from sprites import SpriteSheet
 
+"""
+
+    Map Loader:
+
+    -This file contains the Tile class and the functions responsible for reading the level maps contained in the map.json file in **Bytecode**
+
+"""
+
 class Tile:
     def __init__(self, image, x, y, tile_type):
         self.image = image
@@ -56,8 +64,8 @@ PowerUps:
 6 = Cannon                  (Increased Area)
 
 7 = Extra Blank
-8 = Increased Max HP        (heals 1 heart)
-9 = Surprise                ( Doggo? )
+8 = Increased Max HP        (heals 1 heart) NOT DONE
+9 = Surprise                ( Doggo? )      NOT DONE
 
 0 = Golden Gun              (3 Damage, Increased Size, Less Ammo, Super slow)
 

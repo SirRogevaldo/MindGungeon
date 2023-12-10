@@ -1,6 +1,13 @@
 import pygame, os
 from sprites import SpriteSheet
 
+"""
+    Player Sprites:
+
+    - This file contains the class responsible for drawing the player sprite, inherits the SpriteSheet class from sprites.py
+
+"""
+
 animation_dict = {
     "RIGHT": (0,6),
     "LEFT": (6,12),
