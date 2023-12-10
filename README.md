@@ -1,8 +1,12 @@
 # MindGungeon
 
+Project for the course of **Programing Topics for Video Games**.
+
+**PROJECT MEMBERS**: Tiago Pedrosa nº93389 , Pedro Lima nº97860.
+
 MindGungeon is a game where you shoot your way through the Gungeon: a mysterious dungeon of gun related enemies, get upgrades and better your weapon skills to defeat the Boss and become The Mind of The Gungeon.
 
-"Can you prove yourself and be the biggest mind of the Gungeon?" - Some old man
+"Can you prove yourself, be the biggest mind of the Gungeon and find the prophecized Golden Gun?" - Some old man
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ******
 

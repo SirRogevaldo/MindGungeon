@@ -5,11 +5,9 @@ from playerSprite import GunnerSprite
 from subject import Subject
 import math
 """
-
     Gunman Class
     - Inherits from Actor and Subject
     - Reponsible for player movement logic and player stats
-
 """
 
 #Gunman Class

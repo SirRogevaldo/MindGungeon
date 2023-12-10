@@ -32,7 +32,8 @@ pygame.mouse.set_visible(False)
 def Title_Screen(screen):
     intro = True
 
-    Text_font = pygame.font.Font(os.path.join('Assets', 'Eight-Bit_Madness.ttf'), 80)
+    Text_font = pygame.font.Font(os.path.join('Assets', 'Eight-Bit_Madness.ttf'), 70)
+    Title_font = pygame.font.Font(os.path.join('Assets', 'Eight-Bit_Madness.ttf'), 200)
 
     while intro:
         for event in pygame.event.get():
@@ -46,14 +47,37 @@ def Title_Screen(screen):
 
         match screen:
             case "main":
+                
+                title_image = pygame.image.load(os.path.join('Assets', 'Title.jpg')).convert_alpha()
+                display.blit(title_image, (0,0))
+
+                title_text = Title_font.render("MIND GUNGEON", False, (255, 204, 255))
+                display.blit(title_text, (WIDTH/4, HEIGHT/5))
+
                 start_text = Text_font.render("PRESS SPACE TO START", False, (255,255,255))
                 display.blit(start_text, (WIDTH/3, HEIGHT/2))
             case "win":
-                start_text = Text_font.render("YOU WIN", False, (255,255,255))
-                display.blit(start_text, (WIDTH/3, HEIGHT/2))
+
+                victory_image = pygame.image.load(os.path.join('Assets', 'Victory.jpg')).convert_alpha()
+                victory_image = pygame.transform.scale(victory_image, (WIDTH, HEIGHT))
+                display.blit(victory_image, (0,0))
+
+                player_idle = pygame.image.load(os.path.join('Assets', 'PlayerIdle.png')).convert_alpha()
+                player_idle = pygame.transform.scale(player_idle, (16 * 13, 28 * 10))
+                player_idle.set_colorkey((236, 216, 192))
+                
+                display.blit(player_idle, (WIDTH/2-100, HEIGHT/2-50))
+
+                #start_text = Text_font.render("YOU WIN", False, (255,255,255))
+                #display.blit(start_text, (WIDTH/3, HEIGHT/2))
             case "lose":
-                start_text = Text_font.render("YOU LOSE", False, (255,255,255))
-                display.blit(start_text, (WIDTH/3, HEIGHT/2))
+
+                defeat_image = pygame.image.load(os.path.join('Assets', 'Lose.jpeg')).convert_alpha()
+                defeat_image = pygame.transform.scale(defeat_image, (WIDTH, HEIGHT))
+                display.blit(defeat_image, (0,0))
+
+                start_text = Text_font.render("THE GUN IS STILL WAITING TO BE FOUND, PRESS SPACE TO RESTART", False, (255,255,255))
+                display.blit(start_text, (0, HEIGHT - HEIGHT/10))
         pygame.display.flip()
         clock.tick(60)
 

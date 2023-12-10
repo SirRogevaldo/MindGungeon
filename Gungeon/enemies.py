@@ -26,13 +26,14 @@ class Monster(Subject):
         self.hitBox = pygame.Rect(x, y, 50, 70)
         self.lastX, self.lastY = int(self.hitBox.x), int(self.hitBox.y)
         self.velX, self.velY = 0, 0
-        self.cooldown = pygame.time.get_ticks()
+        self.timer = pygame.time.get_ticks()
+        self.cooldown = 1000
         self.bulletType = "shotgun"
         self.enemySprite = EnemySprite("Shotgun")
         self.awake = False
 
-        self.chamber = 6
         self.maxChamber = 6
+        self.chamber = self.maxChamber
         self.reloadSpeed = 1000
 
     def draw(self, display):
@@ -89,7 +90,7 @@ class Shotgun(Monster):
         self.register("shot", audio_manager.Shotgun_play)
         self.enemySprite = EnemySprite("Shotgun")
         self.bulletType = "shotgun"
-        self.atkSpeed = 500
+        self.cooldown = 500
         self.aura = random.randint(700, 1000)
         self.awake = False
 
@@ -120,15 +121,17 @@ class Shotgun(Monster):
     def fire(self):
         now = pygame.time.get_ticks()
 
-        if now - self.cooldown < self.atkSpeed:
+        if now - self.timer < self.cooldown:
             return False
 
         if self.chamber > 0:
-            self.cooldown, self.chamber = now, self.chamber - 1
+            self.timer = now
+            self.chamber -= 1
             return True
 
-        if now - self.cooldown >= self.reloadSpeed:
-            self.cooldown, self.chamber = now, self.maxChamber
+        if now - self.timer >= self.reloadSpeed:
+            self.timer = now
+            self.chamber = self.maxChamber
             return False
 
         return False
@@ -138,6 +141,7 @@ class Mage(Monster):
         super().__init__(x, y, 4, 1)
         self.bulletType = "magic"
         self.aura = random.randint(1000, 1200)
+        self.cooldown = 2300
 
     def clone(self, x, y):
         return Mage(x, y)
@@ -169,8 +173,8 @@ class Mage(Monster):
     def fire(self):
         if self.awake:
             now = pygame.time.get_ticks()
-            if now - self.cooldown >= 2300:
-                self.cooldown = now
+            if now - self.timer >= self.cooldown:
+                self.timer = now
                 return True
 
         return False
@@ -179,8 +183,9 @@ class Sniper(Monster):
     def __init__(self, x, y):
         super().__init__(x, y, 6, 1)
         self.aura = random.randint(1000, 1200)
-        self.cooldown = 30
+        self.timer = 30
         self.bulletType = "sniper"
+        self.cooldown = 2000
         
 
     def clone(self, x, y):
@@ -210,8 +215,8 @@ class Sniper(Monster):
     def fire(self):
         if self.awake:
             now = pygame.time.get_ticks()
-            if now - self.cooldown >= 2000:
-                self.cooldown = now
+            if now - self.timer >= self.cooldown:
+                self.timer = now
                 return True
 
         return False
@@ -219,13 +224,19 @@ class Sniper(Monster):
 
 class Shade(Monster):
     def __init__(self, x, y):
-        super().__init__(x, y, 45, 1)
-        self.cooldown, self.aura = 30, 5000
+        super().__init__(x, y, 90, 1)
+        self.timer = 100
+        self.aura = 5000
         self.bulletType = "boss"
         self.awake = False
         self.next_change_direction = pygame.time.get_ticks() + random.randint(2000, 5000)
         self.enemySprite = EnemySprite("Shade")
         self.hitBox = pygame.Rect(x, y, 80, 120)
+
+        self.cooldown = 200
+        self.maxChamber = 12
+        self.chamber = self.maxChamber
+        self.reloadSpeed = 2000
 
     def clone(self, x, y):
         return Shade(x, y)
@@ -276,23 +287,39 @@ class Shade(Monster):
         #return moveQueue
 
     def fire(self):
-        if self.awake:
-            now = pygame.time.get_ticks()
-            if now - self.cooldown >= 2000:
-                self.cooldown = now
-                return True
+        now = pygame.time.get_ticks()
+
+        if now - self.timer < self.cooldown:
+            return False
+
+        if self.chamber > 0:
+            self.timer = now
+            self.chamber -= 1
+            return True
+
+        if now - self.timer >= self.reloadSpeed:
+            self.timer = now
+            self.chamber = self.maxChamber
+            return False
 
         return False
 
 class Smiley(Monster):
     def __init__(self, x, y):
-        super().__init__(x, y, 45, 1)
-        self.cooldown, self.aura = 30, 5000
+        super().__init__(x, y, 90, 1)
+        self.timer = 100
+        self.aura = 5000
         self.bulletType = "boss"
         self.awake = False
         self.next_change_direction = pygame.time.get_ticks() + random.randint(2000, 5000)
         self.enemySprite = EnemySprite("Smiley")
         self.hitBox = pygame.Rect(x, y, 80, 120)
+
+        self.cooldown = 220
+        self.maxChamber = 10
+        self.chamber = self.maxChamber
+        self.reloadSpeed = 2200
+
 
     def clone(self, x, y):
         return Smiley(x, y)
@@ -344,11 +371,20 @@ class Smiley(Monster):
         #return moveQueue
 
     def fire(self):
-        if self.awake:
-            now = pygame.time.get_ticks()
-            if now - self.cooldown >= 2000:
-                self.cooldown = now
-                return True
+        now = pygame.time.get_ticks()
+
+        if now - self.timer < self.cooldown:
+            return False
+
+        if self.chamber > 0:
+            self.timer = now
+            self.chamber -= 1
+            return True
+
+        if now - self.timer >= self.reloadSpeed:
+            self.timer = now
+            self.chamber = self.maxChamber
+            return False
 
         return False
     
